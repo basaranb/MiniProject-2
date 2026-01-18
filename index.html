@@ -12,6 +12,14 @@
     <div class="container">
         <h1>Urban Mobility Decision Experiment</h1>
         
+        <!-- Route Selection Menu -->
+        <div id="route-menu" class="route-menu">
+            <label for="route-select">Select Route:</label>
+            <select id="route-select" class="route-selector">
+                <!-- Options will be populated by JavaScript -->
+            </select>
+        </div>
+        
         <!-- Welcome Screen -->
         <div id="welcome-screen" class="screen active">
             <p>Welcome to the urban mobility decision experiment. You will be asked to choose a transportation option twice: once with limited information and once with full information.</p>
@@ -34,6 +42,15 @@
         <div id="first-choice-screen" class="screen">
             <h2>Choice 1: Limited Information</h2>
             <p>Choose your preferred mobility option based on the limited information provided:</p>
+            
+            <!-- Map Section -->
+            <div class="map-section">
+                <div class="map-placeholder">
+                    <span class="map-icon">🗺️</span>
+                    <p>Route Map</p>
+                </div>
+            </div>
+            
             <div id="limited-options" class="mobility-options">
                 <!-- Options will be populated by JavaScript -->
             </div>
@@ -43,6 +60,15 @@
         <div id="second-choice-screen" class="screen">
             <h2>Choice 2: Full Information</h2>
             <p>Now choose again with complete information about each option:</p>
+            
+            <!-- Map Section -->
+            <div class="map-section">
+                <div class="map-placeholder">
+                    <span class="map-icon">🗺️</span>
+                    <p>Route Map</p>
+                </div>
+            </div>
+            
             <div id="full-options" class="mobility-options">
                 <!-- Options will be populated by JavaScript -->
             </div>

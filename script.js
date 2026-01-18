@@ -70,6 +70,52 @@ const routes = [
                 physicalActivity: 1
             }
         ]
+    },
+    {
+        id: 'route2',
+        name: 'Home to Airport',
+        options: [
+            {
+                id: 'taxi',
+                name: 'Taxi',
+                time: 30,
+                cost: 35.00,
+                co2: 200,
+                transfers: 0,
+                comfort: 5,
+                physicalActivity: 1
+            },
+            {
+                id: 'airport_bus',
+                name: 'Airport Bus',
+                time: 55,
+                cost: 8.00,
+                co2: 80,
+                transfers: 0,
+                comfort: 3,
+                physicalActivity: 2
+            },
+            {
+                id: 'train',
+                name: 'Train',
+                time: 45,
+                cost: 12.00,
+                co2: 40,
+                transfers: 1,
+                comfort: 4,
+                physicalActivity: 2
+            },
+            {
+                id: 'car',
+                name: 'Personal Car',
+                time: 28,
+                cost: 15.00,
+                co2: 180,
+                transfers: 0,
+                comfort: 5,
+                physicalActivity: 1
+            }
+        ]
     }
 ];
 
@@ -106,15 +152,38 @@ const screens = {
 const timerDisplay = document.getElementById('timer');
 const startBtn = document.getElementById('start-btn');
 const restartBtn = document.getElementById('restart-btn');
+const routeSelect = document.getElementById('route-select');
 
 // Initialize
 function init() {
+    // Populate route selector
+    populateRouteSelector();
+    
     startBtn.addEventListener('click', startExperiment);
     restartBtn.addEventListener('click', resetExperiment);
+    
+    routeSelect.addEventListener('change', handleRouteChange);
     
     document.querySelectorAll('.btn-priority').forEach(btn => {
         btn.addEventListener('click', selectPriority);
     });
+}
+
+function populateRouteSelector() {
+    routeSelect.innerHTML = '';
+    routes.forEach(route => {
+        const option = document.createElement('option');
+        option.value = route.id;
+        option.textContent = route.name;
+        routeSelect.appendChild(option);
+    });
+}
+
+function handleRouteChange(e) {
+    const selectedRoute = routes.find(r => r.id === e.target.value);
+    if (selectedRoute) {
+        state.currentRoute = selectedRoute;
+    }
 }
 
 // Timer functions
@@ -179,7 +248,7 @@ function showScreen(screenName) {
 
 // Experiment flow functions
 function startExperiment() {
-    startTimer();
+    // Don't start timer yet - wait for priority selection
     showScreen('priority');
 }
 
@@ -190,6 +259,10 @@ function selectPriority(e) {
     e.target.classList.add('selected');
     
     state.selectedPriority = e.target.dataset.priority;
+    
+    // Start timer AFTER priority selection
+    resetTimer();
+    startTimer();
     
     setTimeout(() => {
         showFirstChoiceScreen();
@@ -255,12 +328,32 @@ function showSecondChoiceScreen() {
         
         optionDiv.innerHTML = `
             <h3>${escapeHtml(option.name)}</h3>
-            <p class="info"><strong>Time:</strong> ${escapeHtml(String(option.time))} min</p>
-            <p class="info"><strong>Cost:</strong> €${escapeHtml(option.cost.toFixed(2))}</p>
-            <p class="info"><strong>CO₂ Emissions:</strong> ${escapeHtml(String(option.co2))} g</p>
-            <p class="info"><strong>Transfers:</strong> ${escapeHtml(String(option.transfers))}</p>
-            <p class="info"><strong>Comfort:</strong> ${escapeHtml(String(option.comfort))}/5</p>
-            <p class="info"><strong>Physical Activity:</strong> ${escapeHtml(String(option.physicalActivity))}/5</p>
+            <div class="attributes-grid">
+                <div class="attribute-box attribute-time">
+                    <div class="label">Time</div>
+                    <div class="value">${escapeHtml(String(option.time))} min</div>
+                </div>
+                <div class="attribute-box attribute-cost">
+                    <div class="label">Cost</div>
+                    <div class="value">€${escapeHtml(option.cost.toFixed(2))}</div>
+                </div>
+                <div class="attribute-box attribute-co2">
+                    <div class="label">CO₂</div>
+                    <div class="value">${escapeHtml(String(option.co2))} g</div>
+                </div>
+                <div class="attribute-box attribute-transfers">
+                    <div class="label">Transfers</div>
+                    <div class="value">${escapeHtml(String(option.transfers))}</div>
+                </div>
+                <div class="attribute-box attribute-comfort">
+                    <div class="label">Comfort</div>
+                    <div class="value">${escapeHtml(String(option.comfort))}/5</div>
+                </div>
+                <div class="attribute-box attribute-activity">
+                    <div class="label">Activity</div>
+                    <div class="value">${escapeHtml(String(option.physicalActivity))}/5</div>
+                </div>
+            </div>
         `;
         
         optionDiv.addEventListener('click', () => selectSecondChoice(option.id));
