@@ -3,7 +3,7 @@ const TRANSITION_DELAY = 500; // milliseconds
 
 // Data Model: Routes with mobility options
 // Each route contains the same 5 standardized mobility options
-// Core attributes: time (minutes), cost (euros), co2 (grams)
+// Core attributes: time (minutes), cost (euros), co2 (grams), noise (0-5 scale), energy (relative units)
 const routes = [
     {
         id: 'route1',
@@ -14,35 +14,45 @@ const routes = [
                 name: 'Public Transportation',
                 time: 23,              // minutes
                 cost: 0.83,            // euros
-                co2: 8.1               // grams
+                co2: 8.1,              // grams
+                noise: 5,              // 0-5 scale
+                energy: 45             // relative units
             },
             {
                 id: 'bicycle',
                 name: 'Bicycle (WienRad)',
                 time: 13,
                 cost: 0.75,
-                co2: 0
+                co2: 0,
+                noise: 1,
+                energy: 8
             },
             {
                 id: 'walking',
                 name: 'Walking',
                 time: 48,
                 cost: 0,
-                co2: 0
+                co2: 0,
+                noise: 0,
+                energy: 5
             },
             {
                 id: 'lime_scooter',
                 name: 'Lime Scooter',
                 time: 10,
                 cost: 5.00,
-                co2: 0
+                co2: 0,
+                noise: 2,
+                energy: 15
             },
             {
                 id: 'motorcycle',
                 name: 'Motorcycle',
                 time: 12,
                 cost: 0.25,
-                co2: 400
+                co2: 400,
+                noise: 5,
+                energy: 35
             }
         ]
     },
@@ -55,35 +65,45 @@ const routes = [
                 name: 'Public Transportation',
                 time: 55,
                 cost: 8.00,
-                co2: 80
+                co2: 80,
+                noise: 5,
+                energy: 85
             },
             {
                 id: 'bicycle',
                 name: 'Bicycle (WienRad)',
                 time: 90,
                 cost: 0.80,
-                co2: 0
+                co2: 0,
+                noise: 1,
+                energy: 18
             },
             {
                 id: 'walking',
                 name: 'Walking',
                 time: 150,
                 cost: 0,
-                co2: 0
+                co2: 0,
+                noise: 0,
+                energy: 12
             },
             {
                 id: 'lime_scooter',
                 name: 'Lime Scooter',
                 time: 50,
                 cost: 12.00,
-                co2: 25
+                co2: 25,
+                noise: 2,
+                energy: 30
             },
             {
                 id: 'motorcycle',
                 name: 'Motorcycle',
                 time: 28,
                 cost: 6.50,
-                co2: 180
+                co2: 180,
+                noise: 5,
+                energy: 65
             }
         ]
     },
@@ -96,35 +116,45 @@ const routes = [
                 name: 'Public Transportation',
                 time: 28,
                 cost: 2.50,
-                co2: 45
+                co2: 45,
+                noise: 5,
+                energy: 50
             },
             {
                 id: 'bicycle',
                 name: 'Bicycle (WienRad)',
                 time: 35,
                 cost: 0.80,
-                co2: 0
+                co2: 0,
+                noise: 1,
+                energy: 10
             },
             {
                 id: 'walking',
                 name: 'Walking',
                 time: 55,
                 cost: 0,
-                co2: 0
+                co2: 0,
+                noise: 0,
+                energy: 8
             },
             {
                 id: 'lime_scooter',
                 name: 'Lime Scooter',
                 time: 20,
                 cost: 3.00,
-                co2: 12
+                co2: 12,
+                noise: 2,
+                energy: 18
             },
             {
                 id: 'motorcycle',
                 name: 'Motorcycle',
                 time: 15,
                 cost: 2.50,
-                co2: 95
+                co2: 95,
+                noise: 5,
+                energy: 32
             }
         ]
     }
@@ -234,6 +264,26 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+// Helper function to create noise level indicator
+function createNoiseIndicator(noiseLevel) {
+    // Calculate color from green (0) to red (5)
+    const greenToRed = (value) => {
+        const percentage = value / 5;
+        const r = Math.round(255 * percentage);
+        const g = Math.round(255 * (1 - percentage));
+        return `rgb(${r}, ${g}, 0)`;
+    };
+    
+    let bars = '';
+    for (let i = 1; i <= 5; i++) {
+        const isActive = i <= noiseLevel;
+        const color = isActive ? greenToRed(i) : '#e0e0e0';
+        bars += `<div class="noise-bar ${isActive ? 'active' : ''}" style="background-color: ${color};"></div>`;
+    }
+    
+    return `<div class="noise-indicator">${bars}</div>`;
+}
+
 function updateTimerDisplay(milliseconds) {
     timerDisplay.textContent = formatTime(milliseconds, 'display');
 }
@@ -327,18 +377,30 @@ function showSecondChoiceScreen() {
         
         optionDiv.innerHTML = `
             <h3>${escapeHtml(option.name)}</h3>
-            <div class="attributes-grid">
-                <div class="attribute-box attribute-time">
-                    <div class="label">Time</div>
-                    <div class="value">${escapeHtml(String(option.time))} min</div>
+            <div class="full-info-layout">
+                <div class="basic-attributes">
+                    <div class="attribute-box-small attribute-time">
+                        <div class="label">Time</div>
+                        <div class="value">${escapeHtml(String(option.time))} min</div>
+                    </div>
+                    <div class="attribute-box-small attribute-cost">
+                        <div class="label">Cost</div>
+                        <div class="value">€${escapeHtml(option.cost.toFixed(2))}</div>
+                    </div>
                 </div>
-                <div class="attribute-box attribute-cost">
-                    <div class="label">Cost</div>
-                    <div class="value">€${escapeHtml(option.cost.toFixed(2))}</div>
-                </div>
-                <div class="attribute-box attribute-co2">
-                    <div class="label">CO₂</div>
-                    <div class="value">${escapeHtml(String(option.co2))} g</div>
+                <div class="extended-attributes">
+                    <div class="attribute-box attribute-co2">
+                        <div class="label">CO₂</div>
+                        <div class="value">${escapeHtml(String(option.co2))} g</div>
+                    </div>
+                    <div class="attribute-box attribute-noise">
+                        <div class="label">Noise Impact</div>
+                        ${createNoiseIndicator(option.noise)}
+                    </div>
+                    <div class="attribute-box attribute-energy">
+                        <div class="label">Energy</div>
+                        <div class="value">${escapeHtml(String(option.energy))} units</div>
+                    </div>
                 </div>
             </div>
         `;
