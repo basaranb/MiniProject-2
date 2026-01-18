@@ -7,42 +7,42 @@ const TRANSITION_DELAY = 500; // milliseconds
 const routes = [
     {
         id: 'route1',
-        name: 'City Center to University',
+        name: 'Wien Hauptbahnhof to Schottentor',
         options: [
             {
                 id: 'public_transport',
                 name: 'Public Transportation',
-                time: 35,              // minutes
-                cost: 2.50,            // euros
-                co2: 50                // grams
+                time: 23,              // minutes
+                cost: 0.83,            // euros
+                co2: 8.1               // grams
             },
             {
                 id: 'bicycle',
                 name: 'Bicycle (WienRad)',
-                time: 40,
-                cost: 0.80,
+                time: 13,
+                cost: 0.75,
                 co2: 0
             },
             {
                 id: 'walking',
                 name: 'Walking',
-                time: 65,
+                time: 48,
                 cost: 0,
                 co2: 0
             },
             {
                 id: 'lime_scooter',
                 name: 'Lime Scooter',
-                time: 22,
-                cost: 3.50,
-                co2: 15
+                time: 10,
+                cost: 5.00,
+                co2: 0
             },
             {
                 id: 'motorcycle',
                 name: 'Motorcycle',
-                time: 18,
-                cost: 2.80,
-                co2: 120
+                time: 12,
+                cost: 0.25,
+                co2: 400
             }
         ]
     },
