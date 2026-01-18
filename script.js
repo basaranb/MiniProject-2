@@ -166,7 +166,7 @@ function updateTimerDisplay(milliseconds) {
 }
 
 function getCurrentTime() {
-    return formatTime(state.elapsedTime, 'readable');
+    return formatTime(state.elapsedTime, 'text');
 }
 
 // Navigation functions
@@ -329,8 +329,6 @@ function showResults() {
     
     showScreen('results');
 }
-
-
 
 function resetExperiment() {
     // Reset all state
