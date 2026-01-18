@@ -34,43 +34,50 @@
                 <button class="btn btn-priority" data-priority="time">Travel Time</button>
                 <button class="btn btn-priority" data-priority="co2">CO₂ Emissions</button>
                 <button class="btn btn-priority" data-priority="cost">Cost</button>
-                <button class="btn btn-priority" data-priority="transfers">Number of Transfers</button>
             </div>
         </div>
         
         <!-- First Choice Screen (Limited Info) -->
         <div id="first-choice-screen" class="screen">
-            <h2>Choice 1: Limited Information</h2>
-            <p>Choose your preferred mobility option based on the limited information provided:</p>
-            
-            <!-- Map Section -->
-            <div class="map-section">
-                <div class="map-placeholder">
-                    <span class="map-icon">🗺️</span>
-                    <p>Route Map</p>
+            <div class="layout-with-map">
+                <div class="dashboard-panel">
+                    <h2>Choice 1: Limited Information</h2>
+                    <p>Choose your preferred mobility option based on the limited information provided:</p>
+                    
+                    <div id="limited-options" class="mobility-options">
+                        <!-- Options will be populated by JavaScript -->
+                    </div>
                 </div>
-            </div>
-            
-            <div id="limited-options" class="mobility-options">
-                <!-- Options will be populated by JavaScript -->
+                
+                <div class="map-panel">
+                    <div class="map-placeholder">
+                        <span class="map-icon">🗺️</span>
+                        <p>Route Map</p>
+                        <span class="route-name" id="map-route-1"></span>
+                    </div>
+                </div>
             </div>
         </div>
         
         <!-- Second Choice Screen (Full Info) -->
         <div id="second-choice-screen" class="screen">
-            <h2>Choice 2: Full Information</h2>
-            <p>Now choose again with complete information about each option:</p>
-            
-            <!-- Map Section -->
-            <div class="map-section">
-                <div class="map-placeholder">
-                    <span class="map-icon">🗺️</span>
-                    <p>Route Map</p>
+            <div class="layout-with-map">
+                <div class="dashboard-panel">
+                    <h2>Choice 2: Full Information</h2>
+                    <p>Now choose again with complete information about each option:</p>
+                    
+                    <div id="full-options" class="mobility-options">
+                        <!-- Options will be populated by JavaScript -->
+                    </div>
                 </div>
-            </div>
-            
-            <div id="full-options" class="mobility-options">
-                <!-- Options will be populated by JavaScript -->
+                
+                <div class="map-panel">
+                    <div class="map-placeholder">
+                        <span class="map-icon">🗺️</span>
+                        <p>Route Map</p>
+                        <span class="route-name" id="map-route-2"></span>
+                    </div>
+                </div>
             </div>
         </div>
         

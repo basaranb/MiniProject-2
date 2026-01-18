@@ -2,8 +2,8 @@
 const TRANSITION_DELAY = 500; // milliseconds
 
 // Data Model: Routes with mobility options
-// Each route contains multiple mobility options with all attributes
-// This structure can be easily extended by adding more routes or options
+// Each route contains the same 5 standardized mobility options
+// Core attributes: time (minutes), cost (euros), co2 (grams)
 const routes = [
     {
         id: 'route1',
@@ -11,63 +11,38 @@ const routes = [
         options: [
             {
                 id: 'public_transport',
-                name: 'Public Transport',
+                name: 'Public Transportation',
                 time: 35,              // minutes
                 cost: 2.50,            // euros
-                co2: 50,               // grams
-                transfers: 1,          // number
-                comfort: 3,            // scale 1-5
-                physicalActivity: 2    // scale 1-5
+                co2: 50                // grams
             },
             {
-                id: 'bike',
-                name: 'Bike',
+                id: 'bicycle',
+                name: 'Bicycle (WienRad)',
                 time: 40,
+                cost: 0.80,
+                co2: 0
+            },
+            {
+                id: 'walking',
+                name: 'Walking',
+                time: 65,
                 cost: 0,
-                co2: 0,
-                transfers: 0,
-                comfort: 2,
-                physicalActivity: 5
+                co2: 0
             },
             {
-                id: 'ebike',
-                name: 'E-Bike',
-                time: 25,
-                cost: 1.50,
-                co2: 10,
-                transfers: 0,
-                comfort: 4,
-                physicalActivity: 3
-            },
-            {
-                id: 'scooter',
-                name: 'Scooter',
+                id: 'lime_scooter',
+                name: 'Lime Scooter',
                 time: 22,
-                cost: 3.00,
-                co2: 15,
-                transfers: 0,
-                comfort: 3,
-                physicalActivity: 1
+                cost: 3.50,
+                co2: 15
             },
             {
-                id: 'motorbike',
-                name: 'Motorbike',
+                id: 'motorcycle',
+                name: 'Motorcycle',
                 time: 18,
-                cost: 4.00,
-                co2: 120,
-                transfers: 0,
-                comfort: 4,
-                physicalActivity: 2
-            },
-            {
-                id: 'car',
-                name: 'Personal Car',
-                time: 20,
-                cost: 5.00,
-                co2: 150,
-                transfers: 0,
-                comfort: 5,
-                physicalActivity: 1
+                cost: 2.80,
+                co2: 120
             }
         ]
     },
@@ -76,44 +51,80 @@ const routes = [
         name: 'Home to Airport',
         options: [
             {
-                id: 'taxi',
-                name: 'Taxi',
-                time: 30,
-                cost: 35.00,
-                co2: 200,
-                transfers: 0,
-                comfort: 5,
-                physicalActivity: 1
-            },
-            {
-                id: 'airport_bus',
-                name: 'Airport Bus',
+                id: 'public_transport',
+                name: 'Public Transportation',
                 time: 55,
                 cost: 8.00,
-                co2: 80,
-                transfers: 0,
-                comfort: 3,
-                physicalActivity: 2
+                co2: 80
             },
             {
-                id: 'train',
-                name: 'Train',
-                time: 45,
+                id: 'bicycle',
+                name: 'Bicycle (WienRad)',
+                time: 90,
+                cost: 0.80,
+                co2: 0
+            },
+            {
+                id: 'walking',
+                name: 'Walking',
+                time: 150,
+                cost: 0,
+                co2: 0
+            },
+            {
+                id: 'lime_scooter',
+                name: 'Lime Scooter',
+                time: 50,
                 cost: 12.00,
-                co2: 40,
-                transfers: 1,
-                comfort: 4,
-                physicalActivity: 2
+                co2: 25
             },
             {
-                id: 'car',
-                name: 'Personal Car',
+                id: 'motorcycle',
+                name: 'Motorcycle',
                 time: 28,
-                cost: 15.00,
-                co2: 180,
-                transfers: 0,
-                comfort: 5,
-                physicalActivity: 1
+                cost: 6.50,
+                co2: 180
+            }
+        ]
+    },
+    {
+        id: 'route3',
+        name: 'Downtown to Shopping Mall',
+        options: [
+            {
+                id: 'public_transport',
+                name: 'Public Transportation',
+                time: 28,
+                cost: 2.50,
+                co2: 45
+            },
+            {
+                id: 'bicycle',
+                name: 'Bicycle (WienRad)',
+                time: 35,
+                cost: 0.80,
+                co2: 0
+            },
+            {
+                id: 'walking',
+                name: 'Walking',
+                time: 55,
+                cost: 0,
+                co2: 0
+            },
+            {
+                id: 'lime_scooter',
+                name: 'Lime Scooter',
+                time: 20,
+                cost: 3.00,
+                co2: 12
+            },
+            {
+                id: 'motorcycle',
+                name: 'Motorcycle',
+                time: 15,
+                cost: 2.50,
+                co2: 95
             }
         ]
     }
@@ -123,8 +134,7 @@ const routes = [
 const priorities = {
     time: { label: 'Travel Time', attribute: 'time', unit: 'min' },
     co2: { label: 'CO₂ Emissions', attribute: 'co2', unit: 'g' },
-    cost: { label: 'Cost', attribute: 'cost', unit: '€' },
-    transfers: { label: 'Number of Transfers', attribute: 'transfers', unit: '' }
+    cost: { label: 'Cost', attribute: 'cost', unit: '€' }
 };
 
 // State management
@@ -273,6 +283,9 @@ function showFirstChoiceScreen() {
     const container = document.getElementById('limited-options');
     container.innerHTML = '';
     
+    // Update map route name
+    document.getElementById('map-route-1').textContent = state.currentRoute.name;
+    
     const priority = priorities[state.selectedPriority];
     const attribute = priority.attribute;
     
@@ -318,6 +331,9 @@ function showSecondChoiceScreen() {
     resetTimer();
     startTimer();
     
+    // Update map route name
+    document.getElementById('map-route-2').textContent = state.currentRoute.name;
+    
     const container = document.getElementById('full-options');
     container.innerHTML = '';
     
@@ -340,18 +356,6 @@ function showSecondChoiceScreen() {
                 <div class="attribute-box attribute-co2">
                     <div class="label">CO₂</div>
                     <div class="value">${escapeHtml(String(option.co2))} g</div>
-                </div>
-                <div class="attribute-box attribute-transfers">
-                    <div class="label">Transfers</div>
-                    <div class="value">${escapeHtml(String(option.transfers))}</div>
-                </div>
-                <div class="attribute-box attribute-comfort">
-                    <div class="label">Comfort</div>
-                    <div class="value">${escapeHtml(String(option.comfort))}/5</div>
-                </div>
-                <div class="attribute-box attribute-activity">
-                    <div class="label">Activity</div>
-                    <div class="value">${escapeHtml(String(option.physicalActivity))}/5</div>
                 </div>
             </div>
         `;
