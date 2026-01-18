@@ -1,45 +1,93 @@
-// Mobility options data
-const mobilityOptions = [
+// Constants
+const TRANSITION_DELAY = 500; // milliseconds
+
+// Data Model: Routes with mobility options
+// Each route contains multiple mobility options with all attributes
+// This structure can be easily extended by adding more routes or options
+const routes = [
     {
-        id: 'car',
-        name: 'Personal Car',
-        time: '20 minutes',
-        co2: '150g CO₂',
-        transfers: 0,
-        limitedInfo: 'Direct route to destination'
-    },
-    {
-        id: 'bus',
-        name: 'Bus',
-        time: '35 minutes',
-        co2: '50g CO₂',
-        transfers: 1,
-        limitedInfo: 'Public transport option'
-    },
-    {
-        id: 'metro',
-        name: 'Metro + Walk',
-        time: '28 minutes',
-        co2: '30g CO₂',
-        transfers: 0,
-        limitedInfo: 'Rail-based transport'
-    },
-    {
-        id: 'bike',
-        name: 'Bicycle',
-        time: '40 minutes',
-        co2: '0g CO₂',
-        transfers: 0,
-        limitedInfo: 'Active mobility option'
+        id: 'route1',
+        name: 'City Center to University',
+        options: [
+            {
+                id: 'public_transport',
+                name: 'Public Transport',
+                time: 35,              // minutes
+                cost: 2.50,            // euros
+                co2: 50,               // grams
+                transfers: 1,          // number
+                comfort: 3,            // scale 1-5
+                physicalActivity: 2    // scale 1-5
+            },
+            {
+                id: 'bike',
+                name: 'Bike',
+                time: 40,
+                cost: 0,
+                co2: 0,
+                transfers: 0,
+                comfort: 2,
+                physicalActivity: 5
+            },
+            {
+                id: 'ebike',
+                name: 'E-Bike',
+                time: 25,
+                cost: 1.50,
+                co2: 10,
+                transfers: 0,
+                comfort: 4,
+                physicalActivity: 3
+            },
+            {
+                id: 'scooter',
+                name: 'Scooter',
+                time: 22,
+                cost: 3.00,
+                co2: 15,
+                transfers: 0,
+                comfort: 3,
+                physicalActivity: 1
+            },
+            {
+                id: 'motorbike',
+                name: 'Motorbike',
+                time: 18,
+                cost: 4.00,
+                co2: 120,
+                transfers: 0,
+                comfort: 4,
+                physicalActivity: 2
+            },
+            {
+                id: 'car',
+                name: 'Personal Car',
+                time: 20,
+                cost: 5.00,
+                co2: 150,
+                transfers: 0,
+                comfort: 5,
+                physicalActivity: 1
+            }
+        ]
     }
 ];
+
+// Priority definitions with labels and attribute keys
+const priorities = {
+    time: { label: 'Travel Time', attribute: 'time', unit: 'min' },
+    co2: { label: 'CO₂ Emissions', attribute: 'co2', unit: 'g' },
+    cost: { label: 'Cost', attribute: 'cost', unit: '€' },
+    transfers: { label: 'Number of Transfers', attribute: 'transfers', unit: '' }
+};
 
 // State management
 let state = {
     timerInterval: null,
     startTime: null,
     elapsedTime: 0,
-    priority: null,
+    selectedPriority: null,
+    currentRoute: routes[0], // Use first route by default
     firstChoice: null,
     firstChoiceTime: null,
     secondChoice: null,
@@ -94,18 +142,31 @@ function updateTimer() {
     updateTimerDisplay(state.elapsedTime);
 }
 
-function updateTimerDisplay(milliseconds) {
+function formatTime(milliseconds, format = 'display') {
     const totalSeconds = Math.floor(milliseconds / 1000);
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
-    timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    
+    if (format === 'display') {
+        return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    } else {
+        return `${minutes}m ${seconds}s`;
+    }
+}
+
+// Helper function to escape HTML to prevent XSS
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function updateTimerDisplay(milliseconds) {
+    timerDisplay.textContent = formatTime(milliseconds, 'display');
 }
 
 function getCurrentTime() {
-    const totalSeconds = Math.floor(state.elapsedTime / 1000);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${minutes}m ${seconds}s`;
+    return formatTime(state.elapsedTime, 'readable');
 }
 
 // Navigation functions
@@ -128,25 +189,31 @@ function selectPriority(e) {
     });
     e.target.classList.add('selected');
     
-    state.priority = e.target.dataset.priority;
+    state.selectedPriority = e.target.dataset.priority;
     
     setTimeout(() => {
         showFirstChoiceScreen();
-    }, 500);
+    }, TRANSITION_DELAY);
 }
 
 function showFirstChoiceScreen() {
     const container = document.getElementById('limited-options');
     container.innerHTML = '';
     
-    mobilityOptions.forEach(option => {
+    const priority = priorities[state.selectedPriority];
+    const attribute = priority.attribute;
+    
+    state.currentRoute.options.forEach(option => {
         const optionDiv = document.createElement('div');
         optionDiv.className = 'mobility-option';
         optionDiv.dataset.optionId = option.id;
         
+        const value = option[attribute];
+        const displayValue = attribute === 'cost' ? value.toFixed(2) : value;
+        
         optionDiv.innerHTML = `
-            <h3>${option.name}</h3>
-            <p class="info">${option.limitedInfo}</p>
+            <h3>${escapeHtml(option.name)}</h3>
+            <p class="info priority-info"><strong>${escapeHtml(priority.label)}:</strong> ${escapeHtml(String(displayValue))} ${escapeHtml(priority.unit)}</p>
             <p class="hidden-info">More details will be revealed in the next step</p>
         `;
         
@@ -170,7 +237,7 @@ function selectFirstChoice(optionId) {
     
     setTimeout(() => {
         showSecondChoiceScreen();
-    }, 500);
+    }, TRANSITION_DELAY);
 }
 
 function showSecondChoiceScreen() {
@@ -181,16 +248,19 @@ function showSecondChoiceScreen() {
     const container = document.getElementById('full-options');
     container.innerHTML = '';
     
-    mobilityOptions.forEach(option => {
+    state.currentRoute.options.forEach(option => {
         const optionDiv = document.createElement('div');
         optionDiv.className = 'mobility-option';
         optionDiv.dataset.optionId = option.id;
         
         optionDiv.innerHTML = `
-            <h3>${option.name}</h3>
-            <p class="info"><strong>Time:</strong> ${option.time}</p>
-            <p class="info"><strong>CO₂ Emissions:</strong> ${option.co2}</p>
-            <p class="info"><strong>Transfers:</strong> ${option.transfers}</p>
+            <h3>${escapeHtml(option.name)}</h3>
+            <p class="info"><strong>Time:</strong> ${escapeHtml(String(option.time))} min</p>
+            <p class="info"><strong>Cost:</strong> €${escapeHtml(option.cost.toFixed(2))}</p>
+            <p class="info"><strong>CO₂ Emissions:</strong> ${escapeHtml(String(option.co2))} g</p>
+            <p class="info"><strong>Transfers:</strong> ${escapeHtml(String(option.transfers))}</p>
+            <p class="info"><strong>Comfort:</strong> ${escapeHtml(String(option.comfort))}/5</p>
+            <p class="info"><strong>Physical Activity:</strong> ${escapeHtml(String(option.physicalActivity))}/5</p>
         `;
         
         optionDiv.addEventListener('click', () => selectSecondChoice(option.id));
@@ -215,31 +285,31 @@ function selectSecondChoice(optionId) {
     
     setTimeout(() => {
         showResults();
-    }, 500);
+    }, TRANSITION_DELAY);
 }
 
 function showResults() {
-    const firstOption = mobilityOptions.find(opt => opt.id === state.firstChoice);
-    const secondOption = mobilityOptions.find(opt => opt.id === state.secondChoice);
+    const firstOption = state.currentRoute.options.find(opt => opt.id === state.firstChoice);
+    const secondOption = state.currentRoute.options.find(opt => opt.id === state.secondChoice);
     const choiceChanged = state.firstChoice !== state.secondChoice;
     
     const resultsContent = document.getElementById('results-content');
     resultsContent.innerHTML = `
         <div class="result-section">
             <h3>Your Priority</h3>
-            <p class="result-item"><strong>Selected Priority:</strong> ${getPriorityLabel(state.priority)}</p>
+            <p class="result-item"><strong>Selected Priority:</strong> ${escapeHtml(priorities[state.selectedPriority].label)}</p>
         </div>
         
         <div class="result-section">
             <h3>First Choice (Limited Information)</h3>
-            <p class="result-item"><strong>Choice:</strong> ${firstOption.name}</p>
-            <p class="result-item"><strong>Time taken:</strong> ${state.firstChoiceTime}</p>
+            <p class="result-item"><strong>Choice:</strong> ${escapeHtml(firstOption.name)}</p>
+            <p class="result-item"><strong>Time taken:</strong> ${escapeHtml(state.firstChoiceTime)}</p>
         </div>
         
         <div class="result-section">
             <h3>Second Choice (Full Information)</h3>
-            <p class="result-item"><strong>Choice:</strong> ${secondOption.name}</p>
-            <p class="result-item"><strong>Time taken:</strong> ${state.secondChoiceTime}</p>
+            <p class="result-item"><strong>Choice:</strong> ${escapeHtml(secondOption.name)}</p>
+            <p class="result-item"><strong>Time taken:</strong> ${escapeHtml(state.secondChoiceTime)}</p>
         </div>
         
         <div class="result-section">
@@ -252,7 +322,7 @@ function showResults() {
                 </span>
             </p>
             ${choiceChanged ? `
-                <p class="result-item"><strong>From:</strong> ${firstOption.name} → <strong>To:</strong> ${secondOption.name}</p>
+                <p class="result-item"><strong>From:</strong> ${escapeHtml(firstOption.name)} → <strong>To:</strong> ${escapeHtml(secondOption.name)}</p>
             ` : ''}
         </div>
     `;
@@ -260,14 +330,7 @@ function showResults() {
     showScreen('results');
 }
 
-function getPriorityLabel(priority) {
-    const labels = {
-        'time': 'Time',
-        'co2': 'CO₂ Emissions',
-        'transfers': 'Number of Transfers'
-    };
-    return labels[priority] || priority;
-}
+
 
 function resetExperiment() {
     // Reset all state
@@ -275,7 +338,8 @@ function resetExperiment() {
         timerInterval: null,
         startTime: null,
         elapsedTime: 0,
-        priority: null,
+        selectedPriority: null,
+        currentRoute: routes[0],
         firstChoice: null,
         firstChoiceTime: null,
         secondChoice: null,
