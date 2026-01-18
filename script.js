@@ -142,7 +142,6 @@ let state = {
     timerInterval: null,
     startTime: null,
     elapsedTime: 0,
-    selectedPriority: null,
     currentRoute: routes[0], // Use first route by default
     firstChoice: null,
     firstChoiceTime: null,
@@ -153,7 +152,6 @@ let state = {
 // DOM elements
 const screens = {
     welcome: document.getElementById('welcome-screen'),
-    priority: document.getElementById('priority-screen'),
     firstChoice: document.getElementById('first-choice-screen'),
     secondChoice: document.getElementById('second-choice-screen'),
     results: document.getElementById('results-screen')
@@ -173,10 +171,6 @@ function init() {
     restartBtn.addEventListener('click', resetExperiment);
     
     routeSelect.addEventListener('change', handleRouteChange);
-    
-    document.querySelectorAll('.btn-priority').forEach(btn => {
-        btn.addEventListener('click', selectPriority);
-    });
 }
 
 function populateRouteSelector() {
@@ -258,25 +252,11 @@ function showScreen(screenName) {
 
 // Experiment flow functions
 function startExperiment() {
-    // Don't start timer yet - wait for priority selection
-    showScreen('priority');
-}
-
-function selectPriority(e) {
-    document.querySelectorAll('.btn-priority').forEach(btn => {
-        btn.classList.remove('selected');
-    });
-    e.target.classList.add('selected');
-    
-    state.selectedPriority = e.target.dataset.priority;
-    
-    // Start timer AFTER priority selection
+    // Start timer immediately when experiment begins
     resetTimer();
     startTimer();
     
-    setTimeout(() => {
-        showFirstChoiceScreen();
-    }, TRANSITION_DELAY);
+    showFirstChoiceScreen();
 }
 
 function showFirstChoiceScreen() {
@@ -286,21 +266,24 @@ function showFirstChoiceScreen() {
     // Update map route name
     document.getElementById('map-route-1').textContent = state.currentRoute.name;
     
-    const priority = priorities[state.selectedPriority];
-    const attribute = priority.attribute;
-    
+    // Display options with time and cost only (hide CO₂)
     state.currentRoute.options.forEach(option => {
         const optionDiv = document.createElement('div');
         optionDiv.className = 'mobility-option';
         optionDiv.dataset.optionId = option.id;
         
-        const value = option[attribute];
-        const displayValue = attribute === 'cost' ? value.toFixed(2) : value;
-        
         optionDiv.innerHTML = `
             <h3>${escapeHtml(option.name)}</h3>
-            <p class="info priority-info"><strong>${escapeHtml(priority.label)}:</strong> ${escapeHtml(String(displayValue))} ${escapeHtml(priority.unit)}</p>
-            <p class="hidden-info">More details will be revealed in the next step</p>
+            <div class="attributes-grid attributes-grid-limited">
+                <div class="attribute-box attribute-time">
+                    <div class="label">Time</div>
+                    <div class="value">${escapeHtml(String(option.time))} min</div>
+                </div>
+                <div class="attribute-box attribute-cost">
+                    <div class="label">Cost</div>
+                    <div class="value">€${escapeHtml(option.cost.toFixed(2))}</div>
+                </div>
+            </div>
         `;
         
         optionDiv.addEventListener('click', () => selectFirstChoice(option.id));
@@ -393,18 +376,13 @@ function showResults() {
     const resultsContent = document.getElementById('results-content');
     resultsContent.innerHTML = `
         <div class="result-section">
-            <h3>Your Priority</h3>
-            <p class="result-item"><strong>Selected Priority:</strong> ${escapeHtml(priorities[state.selectedPriority].label)}</p>
-        </div>
-        
-        <div class="result-section">
-            <h3>First Choice (Limited Information)</h3>
+            <h3>First Choice (Time & Cost Only)</h3>
             <p class="result-item"><strong>Choice:</strong> ${escapeHtml(firstOption.name)}</p>
             <p class="result-item"><strong>Time taken:</strong> ${escapeHtml(state.firstChoiceTime)}</p>
         </div>
         
         <div class="result-section">
-            <h3>Second Choice (Full Information)</h3>
+            <h3>Second Choice (Including CO₂ Emissions)</h3>
             <p class="result-item"><strong>Choice:</strong> ${escapeHtml(secondOption.name)}</p>
             <p class="result-item"><strong>Time taken:</strong> ${escapeHtml(state.secondChoiceTime)}</p>
         </div>
@@ -433,7 +411,6 @@ function resetExperiment() {
         timerInterval: null,
         startTime: null,
         elapsedTime: 0,
-        selectedPriority: null,
         currentRoute: routes[0],
         firstChoice: null,
         firstChoiceTime: null,

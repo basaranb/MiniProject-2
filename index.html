@@ -22,27 +22,16 @@
         
         <!-- Welcome Screen -->
         <div id="welcome-screen" class="screen active">
-            <p>Welcome to the urban mobility decision experiment. You will be asked to choose a transportation option twice: once with limited information and once with full information.</p>
+            <p>Welcome to the urban mobility decision experiment. You will make two transportation choices for the same route. The first choice will have limited information, and the second will have complete information including environmental impact.</p>
             <button id="start-btn" class="btn btn-primary">Start Experiment</button>
         </div>
         
-        <!-- Priority Selection Screen -->
-        <div id="priority-screen" class="screen">
-            <h2>What is your priority?</h2>
-            <p>Please select your main priority when choosing transportation:</p>
-            <div class="priority-options">
-                <button class="btn btn-priority" data-priority="time">Travel Time</button>
-                <button class="btn btn-priority" data-priority="co2">CO₂ Emissions</button>
-                <button class="btn btn-priority" data-priority="cost">Cost</button>
-            </div>
-        </div>
-        
-        <!-- First Choice Screen (Limited Info) -->
+        <!-- First Choice Screen (Limited Info - Time and Cost only) -->
         <div id="first-choice-screen" class="screen">
             <div class="layout-with-map">
                 <div class="dashboard-panel">
                     <h2>Choice 1: Limited Information</h2>
-                    <p>Choose your preferred mobility option based on the limited information provided:</p>
+                    <p>Choose your preferred mobility option based on time and cost:</p>
                     
                     <div id="limited-options" class="mobility-options">
                         <!-- Options will be populated by JavaScript -->
@@ -59,12 +48,12 @@
             </div>
         </div>
         
-        <!-- Second Choice Screen (Full Info) -->
+        <!-- Second Choice Screen (Full Info - Time, Cost, and CO₂) -->
         <div id="second-choice-screen" class="screen">
             <div class="layout-with-map">
                 <div class="dashboard-panel">
                     <h2>Choice 2: Full Information</h2>
-                    <p>Now choose again with complete information about each option:</p>
+                    <p>Now choose again with complete information including CO₂ emissions:</p>
                     
                     <div id="full-options" class="mobility-options">
                         <!-- Options will be populated by JavaScript -->

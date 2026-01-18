@@ -271,6 +271,11 @@ p {
     margin-top: 10px;
 }
 
+/* Attribute boxes for limited info view (2 columns) */
+.attributes-grid-limited {
+    grid-template-columns: repeat(2, 1fr);
+}
+
 .attribute-box {
     padding: 12px;
     border-radius: 10px;
