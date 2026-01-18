@@ -276,30 +276,30 @@ p {
     grid-template-columns: repeat(2, 1fr);
 }
 
-/* Full info layout with compact time/cost on left */
-.full-info-layout {
+/* New full info layout with side attributes on left, main attributes on right */
+.full-info-layout-new {
     display: flex;
     gap: 15px;
     margin-top: 10px;
 }
 
-.basic-attributes {
+.side-attributes {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    min-width: 120px;
+    min-width: 150px;
 }
 
-.extended-attributes {
+.main-attributes {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
     flex: 1;
 }
 
-/* Smaller attribute boxes for time and cost */
+/* Smaller attribute boxes for side attributes */
 .attribute-box-small {
-    padding: 8px;
+    padding: 10px;
     border-radius: 8px;
     text-align: center;
     transition: all 0.3s;
@@ -315,7 +315,7 @@ p {
     color: rgba(0, 0, 0, 0.6);
     font-weight: 600;
     text-transform: uppercase;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
 }
 
 .attribute-box-small .value {
@@ -351,6 +351,15 @@ p {
 
 .attribute-noise {
     background: rgba(255, 255, 255, 0.8);
+    border: 2px solid #e0e0e0;
+}
+
+.attribute-box-small.attribute-energy {
+    background: rgba(138, 43, 226, 0.5);
+}
+
+.attribute-box-small.attribute-noise {
+    background: rgba(255, 255, 255, 0.9);
     border: 2px solid #e0e0e0;
 }
 

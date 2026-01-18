@@ -377,29 +377,29 @@ function showSecondChoiceScreen() {
         
         optionDiv.innerHTML = `
             <h3>${escapeHtml(option.name)}</h3>
-            <div class="full-info-layout">
-                <div class="basic-attributes">
-                    <div class="attribute-box-small attribute-time">
+            <div class="full-info-layout-new">
+                <div class="side-attributes">
+                    <div class="attribute-box-small attribute-noise">
+                        <div class="label">Noise Impact on City</div>
+                        ${createNoiseIndicator(option.noise)}
+                    </div>
+                    <div class="attribute-box-small attribute-energy">
+                        <div class="label">Energy</div>
+                        <div class="value">${escapeHtml(String(option.energy))} units</div>
+                    </div>
+                </div>
+                <div class="main-attributes">
+                    <div class="attribute-box attribute-time">
                         <div class="label">Time</div>
                         <div class="value">${escapeHtml(String(option.time))} min</div>
                     </div>
-                    <div class="attribute-box-small attribute-cost">
+                    <div class="attribute-box attribute-cost">
                         <div class="label">Cost</div>
                         <div class="value">€${escapeHtml(option.cost.toFixed(2))}</div>
                     </div>
-                </div>
-                <div class="extended-attributes">
                     <div class="attribute-box attribute-co2">
                         <div class="label">CO₂</div>
                         <div class="value">${escapeHtml(String(option.co2))} g</div>
-                    </div>
-                    <div class="attribute-box attribute-noise">
-                        <div class="label">Noise Impact</div>
-                        ${createNoiseIndicator(option.noise)}
-                    </div>
-                    <div class="attribute-box attribute-energy">
-                        <div class="label">Energy</div>
-                        <div class="value">${escapeHtml(String(option.energy))} units</div>
                     </div>
                 </div>
             </div>
