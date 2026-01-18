@@ -1,0 +1,468 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.timer {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    padding: 15px 30px;
+    border-radius: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    color: #667eea;
+    z-index: 1000;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 30px;
+    text-align: center;
+    font-size: 32px;
+}
+
+h2 {
+    color: #555;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.screen {
+    display: none;
+}
+
+.screen.active {
+    display: block;
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.btn {
+    padding: 12px 30px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 600;
+}
+
+.btn-primary {
+    background: #667eea;
+    color: white;
+    display: block;
+    margin: 30px auto 0;
+}
+
+.btn-primary:hover {
+    background: #5568d3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.priority-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    justify-content: center;
+}
+
+.btn-priority {
+    background: #f0f0f0;
+    color: #333;
+    padding: 15px 30px;
+    font-size: 18px;
+}
+
+.btn-priority:hover {
+    background: #e0e0e0;
+    transform: translateY(-2px);
+}
+
+.btn-priority.selected {
+    background: #667eea;
+    color: white;
+}
+
+/* Route Menu Styles */
+.route-menu {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.route-menu label {
+    font-weight: 600;
+    color: #333;
+    font-size: 16px;
+}
+
+.route-selector {
+    flex: 1;
+    padding: 10px 15px;
+    font-size: 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.route-selector:hover {
+    border-color: #667eea;
+}
+
+.route-selector:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Layout with map on the right */
+.layout-with-map {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.dashboard-panel {
+    flex: 1;
+    min-width: 0;
+}
+
+.map-panel {
+    width: 400px;
+    flex-shrink: 0;
+}
+
+/* Map Section Styles */
+.map-placeholder {
+    background: linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%);
+    border: 2px dashed #667eea;
+    border-radius: 15px;
+    padding: 30px;
+    text-align: center;
+    height: 100%;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: sticky;
+    top: 20px;
+}
+
+.map-icon {
+    font-size: 64px;
+    margin-bottom: 15px;
+}
+
+.map-placeholder p {
+    color: #667eea;
+    font-weight: 600;
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+.route-name {
+    color: #667eea;
+    font-size: 14px;
+    font-style: italic;
+    margin-top: 10px;
+}
+
+.mobility-options {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.mobility-option {
+    border: 3px solid #e0e0e0;
+    padding: 20px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: white;
+}
+
+.mobility-option:hover {
+    border-color: #667eea;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.mobility-option.selected {
+    border-color: #667eea;
+    background: #f0f4ff;
+    box-shadow: 0 8px 16px rgba(102, 126, 234, 0.2);
+}
+
+.mobility-option h3 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+}
+
+/* Priority info (limited view) */
+.mobility-option .info.priority-info {
+    font-size: 20px;
+    color: white;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    margin: 10px 0;
+    font-weight: 600;
+}
+
+.mobility-option .info.priority-info strong {
+    color: white;
+}
+
+/* Attribute boxes for full info view */
+.attributes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* Attribute boxes for limited info view (2 columns) */
+.attributes-grid-limited {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+/* New full info layout with side attributes on left, main attributes on right */
+.full-info-layout-new {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.side-attributes {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 150px;
+}
+
+.main-attributes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    flex: 1;
+}
+
+/* Smaller attribute boxes for side attributes */
+.attribute-box-small {
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.attribute-box-small:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.attribute-box-small .label {
+    font-size: 11px;
+    color: rgba(0, 0, 0, 0.6);
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.attribute-box-small .value {
+    font-size: 16px;
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.9);
+}
+
+/* Noise indicator styles */
+.noise-indicator {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.noise-bar {
+    width: 20px;
+    height: 24px;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.noise-bar.active {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Additional attribute colors */
+.attribute-energy {
+    background: rgba(138, 43, 226, 0.5);
+}
+
+.attribute-noise {
+    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid #e0e0e0;
+}
+
+.attribute-box-small.attribute-energy {
+    background: rgba(138, 43, 226, 0.5);
+}
+
+.attribute-box-small.attribute-noise {
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #e0e0e0;
+}
+
+.attribute-box {
+    padding: 12px;
+    border-radius: 10px;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.attribute-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.attribute-box .label {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.6);
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.attribute-box .value {
+    font-size: 20px;
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.9);
+}
+
+/* Color coding for different attributes */
+.attribute-time {
+    background: rgba(255, 107, 107, 0.5);
+}
+
+.attribute-cost {
+    background: rgba(255, 195, 113, 0.5);
+}
+
+.attribute-co2 {
+    background: rgba(106, 176, 76, 0.5);
+}
+
+.mobility-option .info {
+    color: #666;
+    margin: 5px 0;
+}
+
+.mobility-option .info strong {
+    color: #333;
+}
+
+.mobility-option .hidden-info {
+    color: #999;
+    font-style: italic;
+}
+
+#results-content {
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.result-section {
+    margin-bottom: 25px;
+    padding-bottom: 25px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.result-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.result-section h3 {
+    color: #667eea;
+    margin-bottom: 10px;
+}
+
+.result-item {
+    margin: 8px 0;
+    color: #555;
+}
+
+.result-item strong {
+    color: #333;
+}
+
+.change-indicator {
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.change-indicator.changed {
+    background: #ffeaa7;
+    color: #d63031;
+}
+
+.change-indicator.unchanged {
+    background: #d4edda;
+    color: #155724;
+}

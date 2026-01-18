@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urban Mobility Decision Experiment</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="timer" id="timer">00:00</div>
+    
+    <div class="container">
+        <h1>Urban Mobility Decision Experiment</h1>
+        
+        <!-- Route Selection Menu -->
+        <div id="route-menu" class="route-menu">
+            <label for="route-select">Select Route:</label>
+            <select id="route-select" class="route-selector">
+                <!-- Options will be populated by JavaScript -->
+            </select>
+        </div>
+        
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="screen active">
+            <p>Welcome to the urban mobility decision experiment. You will make two transportation choices for the same route. The first choice will have limited information, and the second will have complete information including environmental impact.</p>
+            <button id="start-btn" class="btn btn-primary">Start Experiment</button>
+        </div>
+        
+        <!-- First Choice Screen (Limited Info - Time and Cost only) -->
+        <div id="first-choice-screen" class="screen">
+            <div class="layout-with-map">
+                <div class="dashboard-panel">
+                    <h2>Choice 1: Limited Information</h2>
+                    <p>Choose your preferred mobility option based on time and cost:</p>
+                    
+                    <div id="limited-options" class="mobility-options">
+                        <!-- Options will be populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="map-panel">
+                    <div class="map-placeholder">
+                        <span class="map-icon">🗺️</span>
+                        <p>Route Map</p>
+                        <span class="route-name" id="map-route-1"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Second Choice Screen (Full Info - Time, Cost, and CO₂) -->
+        <div id="second-choice-screen" class="screen">
+            <div class="layout-with-map">
+                <div class="dashboard-panel">
+                    <h2>Choice 2: Full Information</h2>
+                    <p>Now choose again with complete information including CO₂ emissions:</p>
+                    
+                    <div id="full-options" class="mobility-options">
+                        <!-- Options will be populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="map-panel">
+                    <div class="map-placeholder">
+                        <span class="map-icon">🗺️</span>
+                        <p>Route Map</p>
+                        <span class="route-name" id="map-route-2"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Results Screen -->
+        <div id="results-screen" class="screen">
+            <h2>Experiment Results</h2>
+            <div id="results-content">
+                <!-- Results will be populated by JavaScript -->
+            </div>
+            <button id="restart-btn" class="btn btn-primary">Restart Experiment</button>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
